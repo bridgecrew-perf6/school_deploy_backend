@@ -91,7 +91,7 @@ const getGradeById = async (req, res) => {
   }
 };
 
-const updateGrade = async (req, res) => {
+const updateGradeById = async (req, res) => {
   try {
     const { gradeId } = req.params;
     const updatedGrade = await Grade.findByIdAndUpdate(gradeId, req.body, {
@@ -122,6 +122,6 @@ module.exports = {
   getGrade,
   updateGrade,
   getGradeById,
-  updateGrade,
+  updateGradeById,
   deleteGrade,
 };
