@@ -1,17 +1,17 @@
 const { ROLES } = require("../constants");
 const User = require("../models/user");
 
-exports.populateTeacherRole = (req, res, next) => {
+const populateTeacherRole = (req, res, next) => {
   req.body.role = ROLES.TEACHER;
   next();
 };
 
-exports.getAllTeachers = async (req, res) => {
+const getAllTeachers = async (req, res) => {
   const teachers = await User.find({ role: ROLES.TEACHER });
   res.json(teachers);
 };
 
-exports.createUser = async (req, res) => {
+const createUser = async (req, res) => {
   try {
     const newUser = User(req.body);
     const user = await newUser.save();
@@ -22,7 +22,7 @@ exports.createUser = async (req, res) => {
   }
 };
 
-exports.getUserById = async (req, res) => {
+const getUserById = async (req, res) => {
   try {
     const { userId } = req.params;
     const user = await User.findById(userId);
@@ -33,7 +33,7 @@ exports.getUserById = async (req, res) => {
   }
 };
 
-exports.updateStudent = async (req, res) => {
+const updateStudent = async (req, res) => {
   try {
     const { userId } = req.params;
     const updatedUser = await User.findByIdAndUpdate(userId, req.body, {
@@ -46,7 +46,7 @@ exports.updateStudent = async (req, res) => {
   }
 };
 
-exports.deleteStudent = async (req, res) => {
+const deleteStudent = async (req, res) => {
   try {
     const { userId } = req.params;
     await User.findByIdAndRemove(userId);
@@ -55,4 +55,13 @@ exports.deleteStudent = async (req, res) => {
     console.log(error);
     res.status(400).json({ error });
   }
+};
+
+module.exports = {
+  populateTeacherRole,
+  getAllTeachers,
+  createUser,
+  getUserById,
+  updateStudent,
+  deleteStudent,
 };

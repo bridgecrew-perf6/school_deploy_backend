@@ -1,6 +1,6 @@
 const Grade = require("../models/grade");
 
-exports.sumFees = (req, res, next) => {
+const sumFees = (req, res, next) => {
   try {
     let totalFixedFees = 0;
     totalFixedFees += parseInt(req.body["admissionFees"]);
@@ -20,7 +20,7 @@ exports.sumFees = (req, res, next) => {
   }
 };
 
-exports.createGrade = async (req, res) => {
+const createGrade = async (req, res) => {
   // VALIDATE THE BODY
   req.body.sections = [];
   req.body.studentCnt = 0;
@@ -36,14 +36,14 @@ exports.createGrade = async (req, res) => {
   }
 };
 
-exports.getAllGrades = async (req, res) => {
+const getAllGrades = async (req, res) => {
   const grades = await Grade.find();
   // res.render("allGrades", { grades });
   // console.log(grades);
   res.json(grades);
 };
 
-exports.getGrade = async (req, res) => {
+const getGrade = async (req, res) => {
   const { gradeName } = req.params;
   try {
     const grade = await Grade.findOne({ gradeName });
@@ -60,7 +60,7 @@ exports.getGrade = async (req, res) => {
   }
 };
 
-exports.updateGrade = async (req, res) => {
+const updateGrade = async (req, res) => {
   const { gradeName } = req.params;
 
   try {
@@ -80,7 +80,7 @@ exports.updateGrade = async (req, res) => {
   }
 };
 
-exports.getGradeById = async (req, res) => {
+const getGradeById = async (req, res) => {
   try {
     const { gradeId } = req.params;
     const grade = await Grade.findById(gradeId);
@@ -91,7 +91,7 @@ exports.getGradeById = async (req, res) => {
   }
 };
 
-exports.updateGrade = async (req, res) => {
+const updateGrade = async (req, res) => {
   try {
     const { gradeId } = req.params;
     const updatedGrade = await Grade.findByIdAndUpdate(gradeId, req.body, {
@@ -104,7 +104,7 @@ exports.updateGrade = async (req, res) => {
   }
 };
 
-exports.deleteAttendance = async (req, res) => {
+const deleteGrade = async (req, res) => {
   try {
     const { gradeId } = req.params;
     await Grade.findByIdAndRemove(gradeId);
@@ -113,4 +113,15 @@ exports.deleteAttendance = async (req, res) => {
     console.log(error);
     res.status(400).json({ error });
   }
+};
+
+module.exports = {
+  sumFees,
+  createGrade,
+  getAllGrades,
+  getGrade,
+  updateGrade,
+  getGradeById,
+  updateGrade,
+  deleteGrade,
 };

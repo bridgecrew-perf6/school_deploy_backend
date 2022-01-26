@@ -1,8 +1,16 @@
 const Grade = require("../models/grade.js");
 const Student = require("../models/student.js");
 const { uploadS3 } = require("./aws_s3.js");
+const Joi = require("joi");
+const {
+  RELIGIONS,
+  SEX,
+  NATIONALITY,
+  FEESCHEMES,
+  BLOODGROUPS,
+} = require("../constants.js");
 
-exports.updateGradeInfo = async (grade) => {
+const updateGradeInfo = async (grade) => {
   // it updates student cnt by 1, adds a new section if required
   try {
     grade["studentCnt"] = grade["studentCnt"] + 1;
@@ -23,7 +31,7 @@ exports.updateGradeInfo = async (grade) => {
   }
 };
 
-exports.populateSectionRollFees = (req, grade) => {
+const populateSectionRollFees = (req, grade) => {
   try {
     // console.log(grade);
     const sectionSize = grade["maxSectionSize"];
@@ -81,7 +89,7 @@ exports.populateSectionRollFees = (req, grade) => {
   }
 };
 
-exports.generateRegistrationNum = (req, res, next) => {
+const generateRegistrationNum = (req, res, next) => {
   try {
     // const dt = new Date();
     // const gradeName = parseInt(grade["gradeName"]).toLocaleString("en-IN", {
@@ -100,7 +108,7 @@ exports.generateRegistrationNum = (req, res, next) => {
   }
 };
 
-exports.admissionPreprocess = async (req, res, next) => {
+const admissionPreprocess = async (req, res, next) => {
   // console.log(req.body);
   const grade = req.body["grade"];
   try {
@@ -122,19 +130,19 @@ exports.admissionPreprocess = async (req, res, next) => {
   }
 };
 
-exports.populateRegistrationNumInReq = (req, res, next) => {
+const populateRegistrationNumInReq = (req, res, next) => {
   // console.log(req.body);
   req.registrationNumber = req.params["registrationNumber"];
   next();
 };
 
-exports.getAllStudents = async (req, res) => {
+const getAllStudents = async (req, res) => {
   const students = await Student.find();
   // res.render("allStudents", { students });
   res.json(students);
 };
 
-exports.getStudent = async (req, res) => {
+const getStudent = async (req, res) => {
   const { registrationNumber } = req.params;
   try {
     const student = await Student.findOne({ registrationNumber });
@@ -154,7 +162,7 @@ exports.getStudent = async (req, res) => {
   }
 };
 
-exports.createStudent = async (req, res) => {
+const createStudent = async (req, res) => {
   // console.log(typeof req.files);
 
   // populating paths of images
@@ -180,7 +188,7 @@ exports.createStudent = async (req, res) => {
   }
 };
 
-exports.updateStudent = async (req, res) => {
+const updateStudent = async (req, res) => {
   // res.send("ok");
   const { registrationNumber } = req.params;
 
@@ -227,7 +235,7 @@ exports.updateStudent = async (req, res) => {
   }
 };
 
-exports.validateStudent = (req, res, next) => {
+const validateStudent = (req, res, next) => {
   const studentValidationSchema = Joi.object({
     studentName: Joi.string().min(3).max(30).required(),
     fatherName: Joi.string().min(3).max(30).required(),
@@ -285,7 +293,7 @@ exports.validateStudent = (req, res, next) => {
   }
 };
 
-exports.getGradeSectionStudents = async (req, res) => {
+const getGradeSectionStudents = async (req, res) => {
   // VALIDATION of params using regex is left
   const { grade, section } = req.params;
   // console.log(grade, section);
@@ -293,7 +301,7 @@ exports.getGradeSectionStudents = async (req, res) => {
   res.json(students);
 };
 
-exports.uploadStudentInfo = uploadS3.fields([
+const uploadStudentInfo = uploadS3.fields([
   { name: "fatherPhoto", maxCount: 1 },
   { name: "motherPhoto", maxCount: 1 },
   { name: "childPhoto", maxCount: 1 },
@@ -301,7 +309,7 @@ exports.uploadStudentInfo = uploadS3.fields([
   { name: "termCert", maxCount: 1 },
 ]);
 
-exports.createStudentDirect = async (req, res) => {
+const createStudentDirect = async (req, res) => {
   try {
     const newStudent = Student(req.body);
     const student = await newStudent.save();
@@ -312,7 +320,7 @@ exports.createStudentDirect = async (req, res) => {
   }
 };
 
-exports.getStudentById = async (req, res) => {
+const getStudentById = async (req, res) => {
   try {
     const { studentId } = req.params;
     const student = await Student.findById(studentId);
@@ -323,7 +331,7 @@ exports.getStudentById = async (req, res) => {
   }
 };
 
-exports.updateStudentById = async (req, res) => {
+const updateStudentById = async (req, res) => {
   try {
     const { studentId } = req.params;
     const updatedStudent = await Student.findByIdAndUpdate(
@@ -338,7 +346,7 @@ exports.updateStudentById = async (req, res) => {
   }
 };
 
-exports.deleteStudent = async (req, res) => {
+const deleteStudent = async (req, res) => {
   try {
     const { studentId } = req.params;
     await Student.findByIdAndRemove(studentId);
@@ -347,4 +355,23 @@ exports.deleteStudent = async (req, res) => {
     console.log(error);
     res.status(400).json({ error });
   }
+};
+
+module.exports = {
+  updateGradeInfo,
+  populateSectionRollFees,
+  generateRegistrationNum,
+  admissionPreprocess,
+  populateRegistrationNumInReq,
+  getAllStudents,
+  getStudent,
+  createStudent,
+  updateStudent,
+  validateStudent,
+  getGradeSectionStudents,
+  uploadStudentInfo,
+  createStudentDirect,
+  getStudentById,
+  updateStudentById,
+  deleteStudent,
 };

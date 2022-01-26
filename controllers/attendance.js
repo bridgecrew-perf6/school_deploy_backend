@@ -1,7 +1,7 @@
 const Attendance = require("../models/attendance");
 const Student = require("../models/student");
 
-exports.findGradeStudents = async (req, res) => {
+const findGradeStudents = async (req, res) => {
   const { gradeName } = req.query;
   // console.log(gradeName);
   try {
@@ -16,7 +16,7 @@ exports.findGradeStudents = async (req, res) => {
   }
 };
 
-exports.checkDuplicate = async (req, res, next) => {
+const checkDuplicate = async (req, res, next) => {
   const { grade, section } = req.body;
   let currDate = new Date();
   currDate = new Date(currDate.toISOString().split("T")[0]);
@@ -30,7 +30,7 @@ exports.checkDuplicate = async (req, res, next) => {
   }
 };
 
-exports.handleAttendancePost = async (req, res) => {
+const handleAttendancePost = async (req, res) => {
   try {
     const { grade, section } = req.body;
     let attendanceData = JSON.parse(req.body.attendanceData);
@@ -54,7 +54,7 @@ exports.handleAttendancePost = async (req, res) => {
   }
 };
 
-exports.handleAttendanceView = async (req, res) => {
+const handleAttendanceView = async (req, res) => {
   // console.log(req.body);
   const { startDate, endDate, grade, section } = req.body;
   // console.log(new Date(startDate));
@@ -69,7 +69,7 @@ exports.handleAttendanceView = async (req, res) => {
   res.json(result);
 };
 
-exports.createAttendance = async (req, res) => {
+const createAttendance = async (req, res) => {
   try {
     const newAttendance = Attendance(req.body);
     const data = await newAttendance.save();
@@ -80,7 +80,7 @@ exports.createAttendance = async (req, res) => {
   }
 };
 
-exports.getAttendanceById = async (req, res) => {
+const getAttendanceById = async (req, res) => {
   try {
     const { attendanceId } = req.params;
     const attendance = await Attendance.findById(attendanceId);
@@ -91,7 +91,7 @@ exports.getAttendanceById = async (req, res) => {
   }
 };
 
-exports.updateAttendance = async (req, res) => {
+const updateAttendance = async (req, res) => {
   try {
     const { attendanceId } = req.params;
     const attendance = await Attendance.findByIdAndUpdate(
@@ -106,7 +106,7 @@ exports.updateAttendance = async (req, res) => {
   }
 };
 
-exports.deleteAttendance = async (req, res) => {
+const deleteAttendance = async (req, res) => {
   try {
     const { attendanceId } = req.params;
     await Attendance.findByIdAndRemove(attendanceId);
@@ -115,4 +115,15 @@ exports.deleteAttendance = async (req, res) => {
     console.log(error);
     res.status(400).json({ error });
   }
+};
+
+module.exports = {
+  findGradeStudents,
+  checkDuplicate,
+  handleAttendancePost,
+  handleAttendanceView,
+  createAttendance,
+  getAttendanceById,
+  updateAttendance,
+  deleteAttendance,
 };

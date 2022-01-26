@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
 
-exports.isSignedIn = expressJwt({
+const isSignedIn = expressJwt({
   secret: process.env.JWT_SECRET,
   algorithms: ["HS256"],
   userProperty: "user",
@@ -23,7 +23,7 @@ exports.isSignedIn = expressJwt({
   },
 });
 
-exports.handleSignup = async (req, res) => {
+const handleSignup = async (req, res) => {
   // console.log(req.body);
   // console.log(ROLES.ADMIN, ROLES.TEACHER);
   try {
@@ -40,7 +40,7 @@ exports.handleSignup = async (req, res) => {
   }
 };
 
-exports.handleSignin = async (req, res) => {
+const handleSignin = async (req, res) => {
   // console.log(req.body);
   // res.send("ok");
 
@@ -80,7 +80,14 @@ exports.handleSignin = async (req, res) => {
   }
 };
 
-exports.handleSignout = (req, res) => {
+const handleSignout = (req, res) => {
   res.clearCookie("token");
   res.json({ messasge: "User signout successfull" });
+};
+
+module.exports = {
+  isSignedIn,
+  handleSignup,
+  handleSignin,
+  handleSignout,
 };
