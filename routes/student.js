@@ -10,6 +10,7 @@ const {
   populateRegistrationNumInReq,
   admissionPreprocess,
   getStudent,
+  deleteStudent,
 } = require("../controllers/student");
 
 const router = Router();
@@ -37,4 +38,5 @@ router
     updateStudent
   );
 
+router.route("/student/delete/:studentId").delete(deleteStudent);
 module.exports = router;

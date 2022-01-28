@@ -349,6 +349,7 @@ const updateStudentById = async (req, res) => {
 const deleteStudent = async (req, res) => {
   try {
     const { studentId } = req.params;
+    // console.log(studentId);
     await Student.findByIdAndRemove(studentId);
     res.json({ msg: "success" });
   } catch (error) {

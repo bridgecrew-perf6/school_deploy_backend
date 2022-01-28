@@ -8,6 +8,7 @@ const {
   getAllGrades,
   getGrade,
   updateGrade,
+  deleteGrade,
 } = require("../controllers/grade.js");
 
 const router = Router();
@@ -22,5 +23,7 @@ router
   .route("/grade/:gradeName")
   .get(isSignedIn, getGrade)
   .post(isSignedIn, uploadS3.none(), sumFees, updateGrade);
+
+router.route("/grade/delete/:gradeId").delete(deleteGrade);
 
 module.exports = router;

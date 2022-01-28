@@ -1,5 +1,7 @@
 const { ROLES } = require("../constants");
 const User = require("../models/user");
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
 const populateTeacherRole = (req, res, next) => {
   req.body.role = ROLES.TEACHER;
@@ -25,17 +27,26 @@ const createUser = async (req, res) => {
 const getUserById = async (req, res) => {
   try {
     const { userId } = req.params;
+    // mongoose.Types.ObjectId(userId)
     const user = await User.findById(userId);
-    res.json({ user });
+    if (user) {
+      res.json({ user });
+    } else {
+      res.status(400).json({ msg: "Invalid User Id" });
+    }
   } catch (error) {
     console.log(error);
     res.status(400).json({ error });
   }
 };
 
-const updateStudent = async (req, res) => {
+const updateUser = async (req, res) => {
   try {
     const { userId } = req.params;
+    const salt_rounds = 10;
+    const encry_password = await bcrypt.hash(req.body["password"], salt_rounds);
+    req.body["encry_password"] = encry_password;
+    delete req.body["password"];
     const updatedUser = await User.findByIdAndUpdate(userId, req.body, {
       new: true,
     });
@@ -46,7 +57,7 @@ const updateStudent = async (req, res) => {
   }
 };
 
-const deleteStudent = async (req, res) => {
+const deleteUser = async (req, res) => {
   try {
     const { userId } = req.params;
     await User.findByIdAndRemove(userId);
@@ -62,6 +73,6 @@ module.exports = {
   getAllTeachers,
   createUser,
   getUserById,
-  updateStudent,
-  deleteStudent,
+  updateUser,
+  deleteUser,
 };
